@@ -6,6 +6,7 @@ use crate::BaseScheduler;
 /// A task wrapper for the [`SimpleScheduler`].
 pub struct SimpleTask<T> {
     inner: T,
+    // time_slice: AtomicIsize,
 }
 
 impl<T> SimpleTask<T> {
@@ -13,8 +14,17 @@ impl<T> SimpleTask<T> {
     pub const fn new(inner: T) -> Self {
         Self {
             inner,
+            // time_slice: AtomicIsize::new(3),        
         }
     }
+
+    // fn time_slice(&self) -> isize {
+    //     self.time_slice.load(Ordering::Acquire)
+    // }
+
+    // fn reset_time_slice(&self) {
+    //     self.time_slice.store(2, Ordering::Release);
+    // }
 
     /// Returns a reference to the inner task struct.
     pub const fn inner(&self) -> &T {
@@ -82,7 +92,7 @@ impl<T> BaseScheduler for SimpleScheduler<T> {
     }
 
     fn task_tick(&mut self, _current: &Self::SchedItem) -> bool {
-        false // no reschedule
+        true // no reschedule
     }
 
     fn set_priority(&mut self, _task: &Self::SchedItem, _prio: isize) -> bool {
